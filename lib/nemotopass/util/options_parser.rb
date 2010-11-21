@@ -8,29 +8,30 @@ module NemoToPassword
       header '  Specific options:'
 
       option :config do
-        short '-c'
         long  '--config=password-policy-settings.yml'
         desc  'The yaml config file'
         default '../config/settings.yml'
       end
 
       option :command, :required=>true do
-        short '-c'
         long  '--command=value'
-        desc  'The operation'
+        desc  'The operation: {create, recover, update, delete}'
         valid %w[create recover update delete]
       end
 
+      option :system, :required=>true do
+        long  '--system=value'
+        desc  'The system'
+      end
+
       option :user, :required=>true do
-        short '-u'
         long  '--user=value'
         desc  'The user of the system'
       end
 
-      option :system, :required=>true do
-        short '-s'
-        long  '--system=value'
-        desc  'The system'
+      option :service, :required=>true do
+        long  '--service=value'
+        desc  'The service identificator'
       end
   
       option :nemo do

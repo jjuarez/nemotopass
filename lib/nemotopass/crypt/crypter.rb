@@ -19,7 +19,7 @@ module NemoToPassword
         return nil if( data.nil? || '' == data )
       
         result = ''
-        StringChunker.chunk( data, BLOCK_SIZE, 'x' ).each { |chunk| result << @crypter.encrypt_block( chunk ) }
+        Util::StringChunker.chunk( data, BLOCK_SIZE, 'x' ).each { |chunk| result << @crypter.encrypt_block( chunk ) }
         result
       end
     
@@ -28,7 +28,7 @@ module NemoToPassword
         return nil if( data.nil? || '' == data )
       
         result = ''
-        StringChunker.chunk( data, BLOCK_SIZE, 'x' ).each { |chunk| result << @crypter.decrypt_block( chunk ) }
+        Util::StringChunker.chunk( data, BLOCK_SIZE, 'x' ).each { |chunk| result << @crypter.decrypt_block( chunk ) }
         result
       end    
     end

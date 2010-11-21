@@ -1,57 +1,86 @@
-
-
 module NemoToPassword
+
   class BadCommand < Exception
   end
   
-  class CommandDispacher
+  class ParameterNotFound < Exception
+  end
+  
+  class ModelFactory
+  
+    def self.build( model_class=Model::SystemPassword )
 
+      if( Choice.choices[:nemo].nil? )
+        raise ParameterNotFound.new "Parameter not found building SystemPassword"
+      else
+        model_class.new( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service], Choice.choices[:nemo] )
+      end      
+    end
+  end
+  
+  class CommandDispacher
+    
     private
-    def self.build_system_password( )
-      
-      Model::SystemPassword.new( 
-        Choice.choices[:user],
-        Choice.choices[:system],
-        Choice.choices[:nemo] )
+    def generate_token
+      Util::TokenGenerator.generate( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service] )
+    end
+    
+    def display( system_password )
+      $stdout.puts( system_password )
     end
     
     public
-    def self.create
+    def create
+      @store.create( ModelFactory.build( ) )
+    end
     
-      if( Choice.choices[:nemo] )
-        sp = build_system_password
-        Store::PasswordStore.create( sp )
+    def recover
+      
+      if( system_password = @store.recover( generate_token ))
+        
+        Util::Logger.instance.debug system_password
+        display system_password
       end
     end
     
-    def self.recover
+    def update
       
-      key = Util::KeyGenerator.generate_key_token( Choice.choices[:user], Choice.choices[:system] )
-      Store::PasswordStore.recover( key )
-    end
-    
-    def self.update
+      system_password = ModelFactory.build
       
-      sp = build_system_password
-      Store::PasswordStore.update( sp )
-    end
-    
-    def self.delete
-      
-      key = Util::KeyGenerator.generate_key_token( Choice.choices[:user], Choice.choices[:system] )
-      Store::PasswordStore.delete( key )
-    end
-    
-    ##
-    # ::RUN::
-    def self.dispatch
-      case Choice.choices[:command]
-        when 'create' : create()
-        when 'recover': recover()
-        when 'update' : update()
-        when 'delete' : delete()
-        else raise BadCommand.new( "The command: #{Choice.choices[:command]} is unknown!!!" )          
+      if( @store.update( system_password ) )
+        Util::Logger.instance.debug "#{system_password.token} Updated"
       end
+    rescue Store::TokenNotFound => e
+      Util::Logger.instance.error e.message
+    end
+    
+    def delete
+      
+      token = generate_token
+      
+      if( @store.delete( token ) )
+        Util::Logger.instance.debug "#{token} Updated"
+      end
+   rescue Store::TokenNotFound => e
+      Util::Logger.instance.error "Delete failed #{e.message}"
+    end
+    
+    def method_missing
+      raise BadCommand.new "Command unknown!!!"
+    end
+        
+    def dispatch
+
+      command = Choice.choices[:command].to_sym
+      
+      Util::Logger.instance.debug "Launching commmand: #{command}"
+      self.send( command )
+    rescue ParameterNotFound => e
+      Util::Logger.instance.error e.message  
+    end
+    
+    def initialize
+      @store = Store::Simple.new( File.join( NemoToPassword::ROOT, 'db', 'store.db' ) )
     end
   end
 end

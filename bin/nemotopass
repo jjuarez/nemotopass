@@ -12,7 +12,7 @@ module NemoToPassword
   
   class CLIApplication
     def self.run
-      CommandDispacher.dispatch
+      CommandDispacher.new.dispatch
     end
   end
 end

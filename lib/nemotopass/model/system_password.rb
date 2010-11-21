@@ -1,4 +1,4 @@
-require 'util/password_rules'
+require 'yaml'
 
 
 module NemoToPassword
@@ -6,7 +6,7 @@ module NemoToPassword
     
     class SystemPassword
   
-      attr_reader :user, :system, :key_token, :nemo
+      attr_reader :system, :user, :service, :token, :nemo
       
       private    
       def self.generate_password( nemo )
@@ -17,19 +17,19 @@ module NemoToPassword
       end
   
       public
-      def initialize( user, system, nemo )
+      def initialize( system, user, service, nemo )
 
-        @user      = user
         @system    = system
+        @user      = user
+        @service   = service
         @nemo      = nemo
-        @key_token = Util::KeyGenerator.generate_key_token( user, system )
+        @token     = Util::TokenGenerator.generate( system, user, service )
         @password  = SystemPassword.generate_password( nemo )
-        
         self
       end
       
       def to_s()
-        "system: -#{@user}/#{@system}- nemo: '#{@nemo}' token: #{@key_token} password: '*****'"
+        "\n#{@system}/#{@user}@#{@service}:\nnemo:     '#{@nemo}'\ntoken:    #{@token}\npassword: '#{@password}'"
       end
     end
   end

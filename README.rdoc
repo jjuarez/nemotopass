@@ -1,6 +1,11 @@
 = Nemotecnicos 2 Password
 Utilidad para convetir frases a passwords con las reglas habituales
 
+
 == TODO
-Documentar esto en condiciones
+
+* Implementacion del modelo (hash)
+* Store sobre un simple fichero YAML encriptado
+* Mirar el tema del GNU PGP
+* Documentar esto en condiciones
 
