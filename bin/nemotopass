@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join( File.dirname( __FILE__ ), %w[.. lib] )
+
+require 'nemotopass'
+
+
+module NemoToPassword
+  
+  NAME = "nemotopass"
+  ROOT = File.join( File.dirname( __FILE__ ), '..' )
+  
+  class CLIApplication
+    def self.run
+      CommandDispacher.dispatch
+    end
+  end
+end
+
+
+##
+# ::Main::
+puts NemoToPassword::CLIApplication.run

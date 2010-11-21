@@ -1,0 +1,6 @@
+= Nemotecnicos 2 Password
+Utilidad para convetir frases a passwords con las reglas habituales
+
+== TODO
+Documentar esto en condiciones
+
