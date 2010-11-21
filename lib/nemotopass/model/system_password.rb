@@ -6,7 +6,7 @@ module NemoToPassword
     
     class SystemPassword
   
-      attr_reader :system, :user, :service, :token, :nemo
+      attr_reader :system, :user, :service, :token, :nemo, :password
       
       private    
       def self.generate_password( nemo )
@@ -29,8 +29,12 @@ module NemoToPassword
       end
       
       def to_s()
-        "\n#{@system}/#{@user}@#{@service}:\nnemo:     '#{@nemo}'\ntoken:    #{@token}\npassword: '#{@password}'"
+        "\n#{@system}/#{@user}@#{@service}:\nnemo:     '#{@nemo}'\ntoken:    #{@token}\npassword: '*****'"
       end
+      
+      # def to_yaml
+      #   
+      # end
     end
   end
 end

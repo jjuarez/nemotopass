@@ -8,7 +8,8 @@ begin
     util/options_parser 
     util/token_generator
     crypt/crypter
-    model/system_password 
+    model/system_password
+    model/factory
     store/simple_store 
     command_dispacher].each { |lib| require lib }
 rescue LoadError => le

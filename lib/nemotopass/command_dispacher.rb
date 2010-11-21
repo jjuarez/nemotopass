@@ -3,40 +3,27 @@ module NemoToPassword
   class BadCommand < Exception
   end
   
-  class ParameterNotFound < Exception
-  end
-  
-  class ModelFactory
-  
-    def self.build( model_class=Model::SystemPassword )
-
-      if( Choice.choices[:nemo].nil? )
-        raise ParameterNotFound.new "Parameter not found building SystemPassword"
-      else
-        model_class.new( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service], Choice.choices[:nemo] )
-      end      
-    end
-  end
-  
   class CommandDispacher
     
     private
-    def generate_token
-      Util::TokenGenerator.generate( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service] )
-    end
-    
     def display( system_password )
       $stdout.puts( system_password )
     end
     
     public
     def create
-      @store.create( ModelFactory.build( ) )
+      
+      system_password = Model::Factory.build
+       
+      @store.create( system_password )
+      Util::Logger.instance.info( system_password.password )
     end
     
     def recover
       
-      if( system_password = @store.recover( generate_token ))
+      token = Util::TokenGenerator.generate( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service] )
+      
+      if( system_password = @store.recover( token ))
         
         Util::Logger.instance.debug system_password
         display system_password
@@ -45,10 +32,10 @@ module NemoToPassword
     
     def update
       
-      system_password = ModelFactory.build
+      system_password = Model::Factory.build
       
       if( @store.update( system_password ) )
-        Util::Logger.instance.debug "#{system_password.token} Updated"
+        Util::Logger.instance.info "#{system_password.token} Updated, nemo: '#{system_password.nemo}'"
       end
     rescue Store::TokenNotFound => e
       Util::Logger.instance.error e.message
@@ -56,10 +43,10 @@ module NemoToPassword
     
     def delete
       
-      token = generate_token
+      token = Util::TokenGenerator.generate( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service] )
       
       if( @store.delete( token ) )
-        Util::Logger.instance.debug "#{token} Updated"
+        Util::Logger.instance.info "#{token} Deleted"
       end
    rescue Store::TokenNotFound => e
       Util::Logger.instance.error "Delete failed #{e.message}"
@@ -75,7 +62,8 @@ module NemoToPassword
       
       Util::Logger.instance.debug "Launching commmand: #{command}"
       self.send( command )
-    rescue ParameterNotFound => e
+      
+    rescue Model::ParameterNotFound, Exception => e
       Util::Logger.instance.error e.message  
     end
     

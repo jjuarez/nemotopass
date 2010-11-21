@@ -1,7 +1,21 @@
 --- 
+Ln/bI/K68ZfwcQGjmYi13YGXHuU=: !ruby/object:NemoToPassword::Model::SystemPassword 
+  nemo: Esto es una mierda
+  password: 33um
+  service: ssh
+  system: wi
+  token: Ln/bI/K68ZfwcQGjmYi13YGXHuU=
+  user: jjuarez
+T4L9B3pEn1/MXFeEbGaEwrlPKK0=: !ruby/object:NemoToPassword::Model::SystemPassword 
+  nemo: Esto es una mierdaxxx
+  password: 33um
+  service: ssh
+  system: wi
+  token: T4L9B3pEn1/MXFeEbGaEwrlPKK0=
+  user: fgutierrez
 f57iOz0kiClmVZDOfvFNNkFH05U=: !ruby/object:NemoToPassword::Model::SystemPassword 
-  nemo: Ya me estoy cansando de este programa XXX +++
-  password: Ym3cd3pX+
+  nemo: Esto es una mierda
+  password: 33um
   service: ssh
   system: wi
   token: f57iOz0kiClmVZDOfvFNNkFH05U=

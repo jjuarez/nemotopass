@@ -25,27 +25,30 @@ module NemoToPassword
         
         @store_file = store_file        
         @data       = YAML.load_file( @store_file )
-        @data       = Hash.new if @data.nil?
+        
+        if( @data.nil? )
+        
+          # Restore
+          @data = Hash.new if @data.nil?
+        end
       end
     
       def create( system_password )
 
-        raise TokenDuplicated.new "Token: #{system_password.token} duplicated" if find( system_password.token ) 
-
+        raise TokenDuplicated.new "Token: #{system_password.token} duplicated" if find( system_password.token )
         @data[system_password.token] = system_password
         save
       end
     
       def recover( token )
+        
         raise TokenNotFound.new "Token: #{token} not found" unless find( token )
-                
         @data[token]
       end
 
       def update( system_password )
         
         raise TokenNotFound.new "Token: #{system_password.token} not found" unless find( system_password.token )
-
         @data[system_password.token] = system_password
         save
       end
@@ -53,7 +56,6 @@ module NemoToPassword
       def delete( token )
         
         raise TokenNotFound.new "Token: #{token} not found" unless find( token )
-
         @data[token]=nil
         save
       end
