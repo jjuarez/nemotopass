@@ -4,19 +4,24 @@ $:.unshift File.join( File.dirname( __FILE__ ), %w[.. lib] )
 
 require 'nemotopass'
 
-
 module NemoToPassword
   
-  NAME = "nemotopass"
   ROOT = File.join( File.dirname( __FILE__ ), '..' )
   
   class CLIApplication
     def self.run
+      Util::Logger.instance.debug( "Initializing application..." )
+      
+      Util::Config.instance[:command] = Choice.choices[:command].to_sym
+      Util::Config.instance[:system]  = Choice.choices[:system]
+      Util::Config.instance[:user]    = Choice.choices[:user]
+      Util::Config.instance[:service] = Choice.choices[:service]
+      Util::Config.instance[:nemo]    = Choice.choices[:nemo]
+      
       CommandDispacher.new.dispatch
     end
   end
 end
-
 
 ##
 # ::Main::

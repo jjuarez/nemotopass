@@ -6,13 +6,13 @@ module NemoToPassword
     
     class SystemPassword
   
-      attr_reader :system, :user, :service, :token, :nemo, :password
+      attr_reader :system, :user, :service, :token, :nemo
       
       private    
-      def self.generate_password( nemo )
+      def self.generate( nemo )
 
-        password = ""
-        nemo.split( ' ' ).each { |token| password << Util::PasswordRules.instance.find_substitution( token ) }
+        password = ''
+        nemo.split( ' ' ).each { |token| password << Util::PasswordRules.find_substitution( token ) }
         password
       end
   
@@ -24,17 +24,19 @@ module NemoToPassword
         @service   = service
         @nemo      = nemo
         @token     = Util::TokenGenerator.generate( system, user, service )
-        @password  = SystemPassword.generate_password( nemo )
+        @password  = Util::Crypter.instance.encrypt( SystemPassword.generate( @nemo ) )
+
         self
       end
       
-      def to_s()
-        "\n#{@system}/#{@user}@#{@service}:\nnemo:     '#{@nemo}'\ntoken:    #{@token}\npassword: '*****'"
+      def password
+        SystemPassword.generate( @nemo )
+       #Util::Crypter.instance.decrypt( @password )
       end
       
-      # def to_yaml
-      #   
-      # end
+      def to_s
+        "[#{@system}/#{@user}@#{@service}] nemo:'#{@nemo}' token:#{@token} password:'*****'"
+      end
     end
   end
 end

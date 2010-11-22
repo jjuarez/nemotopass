@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'choice'
 
+
 module NemoToPassword
   module Util
     Choice.options do

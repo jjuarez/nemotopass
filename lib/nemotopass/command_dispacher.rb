@@ -5,70 +5,65 @@ module NemoToPassword
   
   class CommandDispacher
     
-    private
-    def display( system_password )
-      $stdout.puts( system_password )
+    def self.error_handler( e )
+      Util::Logger.instance.error( e.message )
     end
     
-    public
-    def create
-      
-      system_password = Model::Factory.build
-       
-      @store.create( system_password )
-      Util::Logger.instance.info( system_password.password )
+    def create  
+      sp = Model::Factory.build
+    
+      @store.create( sp )
+      Util::Logger.instance.info( sp.password )
     end
     
     def recover
+      t = Util::TokenGenerator.generate( 
+        Util::Config.instance[:system], 
+        Util::Config.instance[:user], 
+        Util::Config.instance[:service] )
       
-      token = Util::TokenGenerator.generate( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service] )
+      sp = @store.recover( t )
       
-      if( system_password = @store.recover( token ))
-        
-        Util::Logger.instance.debug system_password
-        display system_password
+      if( sp  )
+        Util::Logger.instance.info( "#{sp.to_s}" )
       end
+    rescue Store::TokenNotFound => e
+      CommandDispacher.error_handler( e )
     end
     
     def update
-      
-      system_password = Model::Factory.build
-      
-      if( @store.update( system_password ) )
-        Util::Logger.instance.info "#{system_password.token} Updated, nemo: '#{system_password.nemo}'"
-      end
+      sp = Model::Factory.build
+      Util::Logger.instance.info( "Updated: #{sp.to_s}" ) if @store.update( sp )
     rescue Store::TokenNotFound => e
-      Util::Logger.instance.error e.message
+      CommandDispacher.error_handler( e )
     end
     
     def delete
-      
-      token = Util::TokenGenerator.generate( Choice.choices[:system], Choice.choices[:user], Choice.choices[:service] )
-      
-      if( @store.delete( token ) )
-        Util::Logger.instance.info "#{token} Deleted"
-      end
-   rescue Store::TokenNotFound => e
-      Util::Logger.instance.error "Delete failed #{e.message}"
+      t = Util::TokenGenerator.generate( 
+        Util::Config.instance[:system],
+        Util::Config.instance[:user], 
+        Util::Config.instance[:service] )
+        
+      Util::Logger.instance.info( "Deleted: #{t}" ) if @store.delete( t )
+    rescue Store::TokenNotFound => e
+      CommandDispacher.error_handler( e )
     end
     
-    def method_missing
-      raise BadCommand.new "Command unknown!!!"
-    end
-        
     def dispatch
 
-      command = Choice.choices[:command].to_sym
-      
-      Util::Logger.instance.debug "Launching commmand: #{command}"
-      self.send( command )
-      
-    rescue Model::ParameterNotFound, Exception => e
-      Util::Logger.instance.error e.message  
+      Util::Logger.instance.debug( "Launching #{Util::Config.instance[:command]}" )
+      self.send( Util::Config.instance[:command] )
+#    rescue Model::ParameterNotFound, Exception => e      
+    rescue Model::ParameterNotFound => e      
+      CommandDispacher.error_handler( e )
     end
     
-    def initialize
+    def initialize      
       @store = Store::Simple.new( File.join( NemoToPassword::ROOT, 'db', 'store.db' ) )
+    end
+
+    def method_missing
+      raise BadCommand.new "Command unknown, WTF!!!"
     end
   end
 end

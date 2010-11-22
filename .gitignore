@@ -1,4 +1,5 @@
 .DS_Store
 config/settings.yml
+db/store.db
 log/nemotopass.log
 doc/**

@@ -7,9 +7,10 @@ module NemoToPassword
     class Logger
       include Singleton
     
-      DEFAULT_LEVEL = ::Logger::DEBUG
+      DEFAULT_CHANNEL = STDERR
+      DEFAULT_LEVEL   = ::Logger::DEBUG
     
-      def initialize( level=DEFAULT_LEVEL )
+      def initialize( channel=DEFAULT_CHANNEL, level=DEFAULT_LEVEL )
       
         @log       = ::Logger.new( STDERR )
         @log.level = level
@@ -18,15 +19,19 @@ module NemoToPassword
       def fatal ( message )
         @log.fatal message
       end
+      
       def error( message )
         @log.error message
       end
+      
       def warn( message )
         @log.warn message
       end
+      
       def info( message )
         @log.info message
       end
+      
       def debug( message )
         @log.debug message
       end

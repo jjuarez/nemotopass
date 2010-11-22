@@ -34,28 +34,40 @@ module NemoToPassword
       end
     
       def create( system_password )
-
-        raise TokenDuplicated.new "Token: #{system_password.token} duplicated" if find( system_password.token )
+  
+        if( find( system_password.token ) && @data[system_password.token] )
+          raise TokenDuplicated.new( "Token: #{system_password.token} duplicated" )
+        end
+        
         @data[system_password.token] = system_password
         save
       end
     
       def recover( token )
         
-        raise TokenNotFound.new "Token: #{token} not found" unless find( token )
+        unless( find( token ) )
+          raise TokenNotFound.new( "Token: #{token} not found" )
+        end
+      
         @data[token]
       end
 
       def update( system_password )
         
-        raise TokenNotFound.new "Token: #{system_password.token} not found" unless find( system_password.token )
+        unless( find( system_password.token ) )
+          raise TokenNotFound.new( "Token: #{system_password.token} not found" )
+        end
+      
         @data[system_password.token] = system_password
         save
       end
 
       def delete( token )
         
-        raise TokenNotFound.new "Token: #{token} not found" unless find( token )
+        unless( find( token ) )
+          raise TokenNotFound.new( "Token: #{token} not found" )
+        end
+      
         @data[token]=nil
         save
       end

@@ -1,11 +1,11 @@
-= Nemotecnicos 2 Password
-Utilidad para convetir frases a passwords con las reglas habituales
-
+= Nemo2Pass
+Utilidad para convetir frases nemotecnicas a passwords con unas reglas basicas
 
 == TODO
 
-* Implementacion del modelo (hash)
-* Store sobre un simple fichero YAML encriptado
-* Mirar el tema del GNU PGP
+* Echar un vistazo al store sobre GNU PGP
 * Documentar esto en condiciones
 
+== LICENSE
+
+© SGAI CSIC 2010
