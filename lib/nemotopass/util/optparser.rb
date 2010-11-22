@@ -17,20 +17,20 @@ module NemoToPassword
       option :command, :required=>true do
         long  '--command=value'
         desc  'The operation: {create, recover, update, delete}'
-        valid %w[create recover update delete]
+        valid %w[create recover update delete list]
       end
 
-      option :system, :required=>true do
+      option :system do
         long  '--system=value'
         desc  'The system'
       end
 
-      option :user, :required=>true do
+      option :user do
         long  '--user=value'
         desc  'The user of the system'
       end
 
-      option :service, :required=>true do
+      option :service do
         long  '--service=value'
         desc  'The service identificator'
       end

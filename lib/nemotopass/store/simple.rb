@@ -71,6 +71,10 @@ module NemoToPassword
         @data[token]=nil
         save
       end
+      
+      def list
+        @data
+      end
     end
   end
 end

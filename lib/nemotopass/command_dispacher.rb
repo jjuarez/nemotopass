@@ -48,12 +48,20 @@ module NemoToPassword
     rescue Store::TokenNotFound => e
       CommandDispacher.error_handler( e )
     end
+
+    def list
+      @store.list.each do |token,sp|
+        Util::Logger.instance.info( "T:#{token} #{sp.to_s}" )
+      end
+    rescue Store::TokenNotFound => e
+      CommandDispacher.error_handler( e )
+    end
     
     def dispatch
 
       Util::Logger.instance.debug( "Launching #{Util::Config.instance[:command]}" )
       self.send( Util::Config.instance[:command] )
-#    rescue Model::ParameterNotFound, Exception => e      
+#   rescue Model::ParameterNotFound, Exception => e      
     rescue Model::ParameterNotFound => e      
       CommandDispacher.error_handler( e )
     end
